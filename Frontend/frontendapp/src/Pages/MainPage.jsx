@@ -2,6 +2,7 @@ import React from 'react';
 import { useEffect,useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import Header from '../Components/Header';
 const MainPage = () => {
     const navigate = useNavigate();
     const [CurrentUserName, setCurrnetUserName] = useState('');
@@ -109,6 +110,7 @@ const MainPage = () => {
     console.log("test currentUser name: ", CurrentUserName);
     return (
         <div>
+          <Header />
       <h1>This is the Main Page</h1>
       
       
