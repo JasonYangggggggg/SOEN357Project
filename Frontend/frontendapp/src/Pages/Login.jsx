@@ -2,6 +2,9 @@
 import React, { useState } from "react";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import Header from "../Components/Header";
+
+
 
 const Login = () => {
   const navigate = useNavigate();
@@ -39,6 +42,8 @@ const Login = () => {
   };
 
   return (
+    <div>
+    <Header /> 
     <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", backgroundColor: "#f4f4f4" }}>
       <div style={{ backgroundColor: "#fff", padding: "20px", borderRadius: "8px", boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", width: "300px", textAlign: "center" }}>
         <h1 style={{ fontSize: "24px", marginBottom: "20px", color: "#333" }}>
@@ -99,6 +104,7 @@ const Login = () => {
           </span>
         </p>
       </div>
+    </div>
     </div>
   );
 }

@@ -1,215 +1,233 @@
-import React from 'react';
-import { useEffect,useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import Slider from "react-slick";
 import Header from '../Components/Header';
+import { products, electronics } from '../Data/products'; // Adjust the import path as needed
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+
+
 const MainPage = () => {
     const navigate = useNavigate();
     const [CurrentUserName, setCurrnetUserName] = useState('');
     const [CurrentRole, setCurrentRole] = useState('');
     const [pendingApprovals, setPendingApprovals] = useState([]);
-
     const [listings, setListings] = useState([]);
-    const [error, setError] = useState(null);  
-    const fetchData = async()=>{
-        const response = await axios.get("http://localhost:3001/check-session", { withCredentials: true });
-        console.log(response.data);
-        if(response.data.message === "Invalid Login"){
-            navigate("/Login")
-        }
-        else{
-            console.log("Log in success");
-            setCurrnetUserName(response.data.Data.username);
-            setCurrentRole(response.data.Data.role);
-            if(response.data.UserData){
-            console.log("here is the", response.data.UserData.IfAdminPendingApprovalList);
-            setPendingApprovals(response.data.UserData.IfAdminPendingApprovalList);
+    const [error, setError] = useState(null);
+
+    const fetchData = async () => {
+        try {
+            const response = await axios.get("http://localhost:3001/check-session", { withCredentials: true });
+            console.log(response.data);
+            if (response.data.message === "Invalid Login") {
+                navigate("/Login");
+            } else {
+                console.log("Log in success");
+                setCurrnetUserName(response.data.Data.username);
+                setCurrentRole(response.data.Data.role);
+                if (response.data.UserData) {
+                    console.log("here is the", response.data.UserData.IfAdminPendingApprovalList);
+                    setPendingApprovals(response.data.UserData.IfAdminPendingApprovalList);
+                }
             }
-            
+        } catch (error) {
+            setError("Failed to fetch data");
         }
-    }
-    const LogoutButton = async() => {
-        const response = await axios.post(
-            "http://localhost:3001/logout", 
-            {},
-            { withCredentials: true }
-          );
-        if(response.data.message === "Logged out successfully"){
-            navigate("/Login");
-        }
-        else{
-            console.log("something is wrong");
-        }
-
-    }
-
-    const navigateToVerifyFormPage = () => {
-        navigate("/VerifyForm");
-    }
-    const handleApproval = async (username, action) => {
-   
-    const response = await axios.post('http://localhost:3001/approveOrReject', {
-          username,
-          action,
-          CurrentUserName,
-        });
-      console.log(response.data);
-      if(response.data.message === 'Approve Success'){
-        fetchData();
-        console.log("approve user");
-      }
-      else{
-        fetchData();
-        console.log("reject user");
-      }
-      
     };
-    const BuyorReserve = async() => {
-      const response = await axios.post('http://localhost:3001/CheckAuth', {
-        CurrentUserName
-      });
-      console.log(response.data);
-      if(response.data.message === "True"){
-         console.log("you are here! you can buy or reserve anything now");
-      }
-      else{
-        navigate("/VerifyForm");
-       
-      }
-    }
 
-    const ListOrAwaitToApprove = async() => {
-      console.log("here is the currentUser");
-      console.log(CurrentUserName);
-      const response = await axios.post('http://localhost:3001/CheckAuth', {
-        CurrentUserName
-      });
-      console.log(response.data);
-      if(response.data.message === "True"){
-        navigate("/ListItem");
-      }
-      else{
-        navigate("/VerifyForm");
-      }
-    }
     const fetchListings = async () => {
-      try {
-          const response = await axios.get('http://localhost:3001/AllListing');
-          setListings(response.data.listings);
-      } catch (error) {
-          console.error("Error fetching listings:", error);
-          setError("Failed to load listings.");
-      }
-  };
+        try {
+            const response = await axios.get("http://localhost:3001/listings");
+            setListings(response.data);
+        } catch (error) {
+            setError("Failed to fetch listings");
+        }
+    };
 
-    useEffect(()=> {
+    useEffect(() => {
         fetchData();
         fetchListings();
+    }, []);
 
-    },[])
-    console.log("test currentUser name: ", CurrentUserName);
+    const settings = {
+        dots: true,
+        infinite: false, // Disable infinite scrolling
+        speed: 500,
+        slidesToShow: 3,
+        slidesToScroll: 1,
+        responsive: [
+            {
+                breakpoint: 1024,
+                settings: {
+                    slidesToShow: 2,
+                    slidesToScroll: 1,
+                    infinite: false, // Disable infinite scrolling
+                    dots: true
+                }
+            },
+            {
+                breakpoint: 600,
+                settings: {
+                    slidesToShow: 1,
+                    slidesToScroll: 1,
+                    initialSlide: 1,
+                    infinite: false // Disable infinite scrolling
+                }
+            }
+        ]
+    };
+
     return (
-        <div>
-          <Header />
-      <h1>This is the Main Page</h1>
-      
-      
-      {CurrentRole === "admin" ? (
-        <div>
-          <h2>Welcome, {CurrentUserName}</h2>
-          <button onClick={LogoutButton}>Logout</button>
-          <button style={{ marginLeft: "20px" }} onClick={navigateToVerifyFormPage}>Go to Verify</button>
-          <div>
-        <h3>Pending Approvals</h3>
-        {pendingApprovals.length === 0 ? (
-          <p>No pending approvals</p>
-        ) : (
-          <table border="1" style={{ width: '100%', marginTop: '20px' }}>
-            <thead>
-              <tr>
-                <th>Username</th>
-                <th>Form Data</th>
-              </tr>
-            </thead>
-            <tbody>
-              {pendingApprovals.map((item, index) => (
-                <tr key={index}>
-                  <td>{item.username}</td>
-                  <td>
-                    
-                    <table style={{ width: '100%' }}>
-                      <tbody>
-                        {Object.keys(item.formData).map((key) => (
-                          <tr key={key}>
-                            <td><strong>{key}</strong></td>
-                            <td>{item.formData[key]}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </td>
-                  <td>
-                    
-                    <button onClick={() => handleApproval(item.username, 'approve')}>Approve</button>
-                    <button 
-                      style={{ marginLeft: '10px' }} 
-                      onClick={() => handleApproval(item.username, 'reject')}
-                    >
-                      Reject
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </div>
-        </div>
-      ) : (
-        <div>
-            <h2>Welcome, {CurrentUserName}</h2>
-            <button onClick={LogoutButton}>Logout</button>
-            <button style={{ marginLeft: "20px" }} onClick={navigateToVerifyFormPage}>Go to Verify</button>
-            <button style={{ marginLeft: "30px" }} onClick={ListOrAwaitToApprove}>List Item</button>
-
-            <div>
-             {error && <p style={{ color: 'red' }}>{error}</p>}
-
-                {listings.length === 0 && !error ? (
-                    <p>No listings available.</p>
-                ) : (
-                    <table border="1" style={{ width: "100%", marginTop: "20px" }}>
-                        <thead>
-                            <tr>
-                                <th>Item Name</th>
-                                <th>How New</th>
-                                <th>Province</th>
-                                <th>Area</th>
-                                <th>Seller</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {listings.map((item, index) => (
-                                <tr key={index}>
-                                    <td>{item.ItemName}</td>
-                                    <td>{item.HowNew}</td>
-                                    <td>{item.Province}</td>
-                                    <td>{item.Area}</td>
-                                    <td>{item.username}</td>
-                                    <td>
-  
-                                <button onClick={BuyorReserve} >Buy/Reserve</button>
-                            </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+        <div style={mainPageStyle}>
+            <Header />
+            <div style={contentStyle}>
+                <h1 style={welcomeStyle}>Welcome to SafeTrade</h1>
+                {CurrentRole === "admin" && (
+                    <div>
+                        <h2>Welcome, {CurrentUserName}</h2>
+                        <button onClick={() => navigate('/Logout')}>Logout</button>
+                        <button style={{ marginLeft: "20px" }} onClick={() => navigate('/VerifyFormPage')}>Go to Verify</button>
+                        <div>
+                            <h3>Pending Approvals</h3>
+                            {pendingApprovals.length === 0 ? (
+                                <p>No pending approvals</p>
+                            ) : (
+                                <table border="1" style={{ width: '100%', marginTop: '20px' }}>
+                                    <thead>
+                                        <tr>
+                                            <th>Username</th>
+                                            <th>Form Data</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {pendingApprovals.map((approval, index) => (
+                                            <tr key={index}>
+                                                <td>{approval.username}</td>
+                                                <td>{approval.formData}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            )}
+                        </div>
+                    </div>
                 )}
+                <h2 style={categoryTitleStyle}>Product Listings</h2>
+                {products.length === 0 ? (
+                    <p>No listings available</p>
+                ) : (
+                    <Slider {...settings}>
+                        {products.map((product) => (
+                            <div key={product.id} style={productLinkStyle}>
+                                <a href={product.href}>
+                                    <img
+                                        alt={product.imageAlt}
+                                        src={product.imageSrc}
+                                        style={productImageStyle}
+                                    />
+                                    <p style={productPriceStyle}>{product.price}</p>
+                                    <h3 style={productNameStyle}>{product.name}</h3>
+                                </a>
+                            </div>
+                        ))}
+                    </Slider>
+                )}
+                <h2 style={categoryTitleStyle}>Electronics</h2>
+                {electronics.length === 0 ? (
+                    <p>No electronics available</p>
+                ) : (
+                    <Slider {...settings}>
+                        {electronics.map((product) => (
+                            <div key={product.id} style={productLinkStyle}>
+                                <a href={product.href}>
+                                    <img
+                                        alt={product.imageAlt}
+                                        src={product.imageSrc}
+                                        style={productImageStyle}
+                                    />
+                                    <p style={productPriceStyle}>{product.price}</p>
+                                    <h3 style={productNameStyle}>{product.name}</h3>
+                                </a>
+                            </div>
+                        ))}
+                    </Slider>
+                )}
+                {error && <p style={errorStyle}>{error}</p>}
             </div>
         </div>
-      )}
-    </div>
-    )
-}
+    );
+};
+
+const mainPageStyle = {
+  background: '#fff',
+  minHeight: '100vh', // Ensure it covers the full viewport height
+  margin: '0',
+  padding: '0',
+  boxSizing: 'border-box'
+};
+
+const contentStyle = {
+  padding: '20px', // Add padding to the content
+  color: '#000' // Ensure text color is readable
+};
+
+const welcomeStyle = {
+  textAlign: 'center',
+  padding: '20px',
+  fontFamily: 'Inter, sans-serif',
+  fontWeight: 'bold',
+};
+
+const categoryTitleStyle = {
+  fontSize: '24px', // Increase the font size for category titles
+  fontWeight: 'bold',
+  marginTop: '20px',
+  marginBottom: '20px',
+  textAlign: 'left'
+};
+
+const listingsContainerStyle = {
+  display: 'flex',
+  flexWrap: 'wrap',
+  gap: '10px', // Reduce the gap between items
+  justifyContent: 'center'
+};
+
+const productLinkStyle = {
+  display: 'block',
+  textAlign: 'center',
+  textDecoration: 'none',
+  color: 'inherit',
+  padding: '10px',
+  outline: 'none', // Remove outline on focus
+  userSelect: 'none', // Prevent text selection
+  WebkitTapHighlightColor: 'transparent', // Remove highlight color on mobile devices
+  border: 'none' // Ensure no border is shown on focus
+};
+
+const productImageStyle = {
+  width: '100%',
+  height: '300px', // Set a fixed height for the images
+  borderRadius: '20px',
+  objectFit: 'contain' // Ensure the image fits within the container
+};
+
+const productNameStyle = {
+  marginTop: '10px',
+  fontSize: '16px',
+  fontWeight: 'bold'
+};
+
+const productPriceStyle = {
+  marginTop: '5px',
+  fontSize: '14px',
+  color: '#555'
+};
+
+const errorStyle = {
+  color: 'red',
+  marginTop: '20px'
+};
 
 export default MainPage;
