@@ -120,7 +120,7 @@ const MainPage = () => {
                     <Slider {...settings}>
                         {products.map((product) => (
                             <div key={product.id} style={productLinkStyle}>
-                                <a href={product.href}>
+                                <a href={product.href} style={productContentStyle}>
                                     <img
                                         alt={product.imageAlt}
                                         src={product.imageSrc}
@@ -133,14 +133,14 @@ const MainPage = () => {
                         ))}
                     </Slider>
                 )}
-                <h2 style={categoryTitleStyle}>Electronics</h2>
+                <h2 style={{ ...categoryTitleStyle, marginTop: '40px' }}>Electronics</h2> {/* Add marginTop to create gap */}
                 {electronics.length === 0 ? (
                     <p>No electronics available</p>
                 ) : (
                     <Slider {...settings}>
                         {electronics.map((product) => (
                             <div key={product.id} style={productLinkStyle}>
-                                <a href={product.href}>
+                                <a href={product.href} style={productContentStyle}>
                                     <img
                                         alt={product.imageAlt}
                                         src={product.imageSrc}
@@ -182,16 +182,10 @@ const welcomeStyle = {
 const categoryTitleStyle = {
   fontSize: '24px', // Increase the font size for category titles
   fontWeight: 'bold',
-  marginTop: '20px',
-  marginBottom: '20px',
-  textAlign: 'left'
-};
-
-const listingsContainerStyle = {
-  display: 'flex',
-  flexWrap: 'wrap',
-  gap: '10px', // Reduce the gap between items
-  justifyContent: 'center'
+  marginTop: '40px', // Add margin to create gap
+  marginBottom:'40px',
+  textAlign: 'left',
+  textDecoration:'underline'
 };
 
 const productLinkStyle = {
@@ -203,26 +197,45 @@ const productLinkStyle = {
   outline: 'none', // Remove outline on focus
   userSelect: 'none', // Prevent text selection
   WebkitTapHighlightColor: 'transparent', // Remove highlight color on mobile devices
-  border: 'none' // Ensure no border is shown on focus
+  backgroundColor: 'transparent', // Ensure background color does not change
+  border: 'none', // Ensure no border is shown on focus
+  boxShadow: 'none' // Remove any box shadow on focus
+};
+
+const productContentStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  height: '100%',
+  userSelect: 'none', // Prevent text selection
+  textDecoration: 'none' // Remove underline
 };
 
 const productImageStyle = {
   width: '100%',
   height: '300px', // Set a fixed height for the images
   borderRadius: '20px',
-  objectFit: 'contain' // Ensure the image fits within the container
+  objectFit: 'contain', // Ensure the image fits within the container
+  userSelect: 'none', // Prevent text selection
+  textDecoration: 'none' // Remove underline
 };
 
 const productNameStyle = {
   marginTop: '10px',
   fontSize: '16px',
-  fontWeight: 'bold'
+  fontWeight: 'bold',
+  color: '#000',
+  userSelect: 'none', // Prevent text selection
+  textDecoration: 'none' // Remove underline
 };
 
 const productPriceStyle = {
   marginTop: '5px',
   fontSize: '14px',
-  color: '#555'
+  color: '#555',
+  userSelect: 'none', // Prevent text selection
+  textDecoration: 'none' // Remove underline
 };
 
 const errorStyle = {
