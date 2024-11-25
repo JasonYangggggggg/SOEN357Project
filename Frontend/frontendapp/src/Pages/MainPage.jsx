@@ -79,83 +79,114 @@ const MainPage = () => {
     };
 
     return (
-        <div style={mainPageStyle}>
-            <Header />
-            <div style={contentStyle}>
-                <h1 style={welcomeStyle}>Welcome to SafeTrade</h1>
-                {CurrentRole === "admin" && (
-                    <div>
-                        <h2>Welcome, {CurrentUserName}</h2>
-                        <button onClick={() => navigate('/Logout')}>Logout</button>
-                        <button style={{ marginLeft: "20px" }} onClick={() => navigate('/VerifyFormPage')}>Go to Verify</button>
-                        <div>
-                            <h3>Pending Approvals</h3>
-                            {pendingApprovals.length === 0 ? (
-                                <p>No pending approvals</p>
-                            ) : (
-                                <table border="1" style={{ width: '100%', marginTop: '20px' }}>
-                                    <thead>
-                                        <tr>
-                                            <th>Username</th>
-                                            <th>Form Data</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {pendingApprovals.map((approval, index) => (
-                                            <tr key={index}>
-                                                <td>{approval.username}</td>
-                                                <td>{approval.formData}</td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            )}
-                        </div>
-                    </div>
-                )}
-                <h2 style={categoryTitleStyle}>Product Listings</h2>
-                {products.length === 0 ? (
-                    <p>No listings available</p>
+      <div style={mainPageStyle}>
+        <Header />
+        <div style={contentStyle}>
+          <h1 style={welcomeStyle}>Welcome to SafeTrade</h1>
+          {CurrentRole === "admin" && (
+            <div>
+              <h2>Welcome, {CurrentUserName}</h2>
+              <button
+                onClick={async () => {
+                  try {
+                    const response = await axios.post(
+                      "http://localhost:3001/Logout",
+                      {},
+                      { withCredentials: true }
+                    );
+                    if (response.data.message === "Logged out successfully") {
+                      navigate("/Login");
+                    } else {
+                      console.error("Logout failed");
+                    }
+                  } catch (error) {
+                    console.error("Error during logout:", error);
+                  }
+                }}
+              >
+                Logout
+              </button>
+
+              <button
+                style={{ marginLeft: "20px" }}
+                onClick={() => navigate("/VerifyFormPage")}
+              >
+                Go to Verify
+              </button>
+              <div>
+                <h3>Pending Approvals</h3>
+                {pendingApprovals.length === 0 ? (
+                  <p>No pending approvals</p>
                 ) : (
-                    <Slider {...settings}>
-                        {products.map((product) => (
-                            <div key={product.id} style={productLinkStyle}>
-                                <a href={product.href} style={productContentStyle}>
-                                    <img
-                                        alt={product.imageAlt}
-                                        src={product.imageSrc}
-                                        style={productImageStyle}
-                                    />
-                                    <p style={productPriceStyle}>{product.price}</p>
-                                    <h3 style={productNameStyle}>{product.name}</h3>
-                                </a>
-                            </div>
-                        ))}
-                    </Slider>
+                  <table
+                    border="1"
+                    style={{ width: "100%", marginTop: "20px" }}
+                  >
+                    <thead>
+                      <tr>
+                        <th>Username</th>
+                        <th>Form Data</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {pendingApprovals.map((approval, index) => (
+                        <tr key={index}>
+                          <td>{approval.username}</td>
+                          <td>{approval.formData}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 )}
-                <h2 style={{ ...categoryTitleStyle, marginTop: '40px' }}>Electronics</h2> {/* Add marginTop to create gap */}
-                {electronics.length === 0 ? (
-                    <p>No electronics available</p>
-                ) : (
-                    <Slider {...settings}>
-                        {electronics.map((product) => (
-                            <div key={product.id} style={productLinkStyle}>
-                                <a href={product.href} style={productContentStyle}>
-                                    <img
-                                        alt={product.imageAlt}
-                                        src={product.imageSrc}
-                                        style={productImageStyle}
-                                    />
-                                    <p style={productPriceStyle}>{product.price}</p>
-                                    <h3 style={productNameStyle}>{product.name}</h3>
-                                </a>
-                            </div>
-                        ))}
-                    </Slider>
-                )}
-                {error && <p style={errorStyle}>{error}</p>}
+              </div>
             </div>
+          )}
+          <h2 style={categoryTitleStyle}>Product Listings</h2>
+          {products.length === 0 ? (
+            <p>No listings available</p>
+          ) : (
+            <Slider {...settings}>
+              {products.map((product) => (
+                <div key={product.id} style={productLinkStyle}>
+                  <a href={product.href} style={productContentStyle}>
+                    <img
+                      alt={product.imageAlt}
+                      src={product.imageSrc}
+                      style={productImageStyle}
+                    />
+                    <p style={productPriceStyle}>{product.price}</p>
+                    <h3 style={productNameStyle}>{product.name}</h3>
+                  </a>
+                </div>
+              ))}
+            </Slider>
+          )}
+          <h2 style={{ ...categoryTitleStyle, marginTop: "40px" }}>
+            Electronics
+          </h2>{" "}
+          {/* Add marginTop to create gap */}
+          {electronics.length === 0 ? (
+            <p>No electronics available</p>
+          ) : (
+            <Slider {...settings}>
+              {electronics.map((product) => (
+                <div key={product.id} style={productLinkStyle}>
+                  <a href={product.href} style={productContentStyle}>
+                    <img
+                      alt={product.imageAlt}
+                      src={product.imageSrc}
+                      style={productImageStyle}
+                    />
+                    <p style={productPriceStyle}>{product.price}</p>
+                    <h3 style={productNameStyle}>{product.name}</h3>
+                  </a>
+                </div>
+              ))}
+            </Slider>
+          )}
+          {error && <p style={errorStyle}>{error}</p>}
         </div>
+      </div>
     );
 };
 
