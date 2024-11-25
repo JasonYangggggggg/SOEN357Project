@@ -9,6 +9,8 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("user");
   const [isRegistering, setIsRegistering] = useState(false);
+  const [message, setMessage] = useState(""); //success or fail text
+  const [messageStyle, setMessageStyle] = useState(""); //success or fail color
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,12 +22,13 @@ const Login = () => {
           { username, password, role },
           { withCredentials: true }
         );
-        alert(response.data.message);
+        setMessage("Registration Successful"); //success message
+        setMessageStyle("green"); //green for success
       } catch (error) {
         console.error("Error during registration:", error);
-        alert("Registration failed"); //handle failed registraion
+        setMessage("Registration Failed"); //fail message
+        setMessageStyle("red"); //red for fail
       }
-
     } else {
       console.log("Logging in user:", username, password);
       const response = await axios.post(
@@ -43,6 +46,7 @@ const Login = () => {
 
   const toggleMode = () => {
     setIsRegistering(!isRegistering);
+    setMessage(""); //clear message
   };
 
   return (
@@ -67,6 +71,22 @@ const Login = () => {
             textAlign: "center",
           }}
         >
+          {message && (
+            <div
+              style={{
+                color: messageStyle,
+                fontSize: "16px",
+                marginBottom: "15px",
+                border: `1px solid ${messageStyle}`,
+                borderRadius: "4px",
+                padding: "10px",
+                backgroundColor:
+                  messageStyle === "green" ? "#d4edda" : "#f8d7da",
+              }}
+            >
+              {message}
+            </div>
+          )}
           <h1 style={{ fontSize: "24px", marginBottom: "20px", color: "#333" }}>
             {isRegistering ? "Register" : "Login"}
           </h1>
