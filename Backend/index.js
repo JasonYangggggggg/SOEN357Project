@@ -80,20 +80,34 @@ app.get("/check-session", async(req, res) => {
 });
 
 app.post("/register", async (req, res) => {
- console.log(req.body);
- let {username, password, role} = req.body;
- console.log(password)
- const hashpassword = await bcrypt.hash(password,10);
- console.log(hashpassword);
- if(role === "admin"){
- const RegisterUser = new User({username, password: hashpassword, role});
- await RegisterUser.save();
- }
- else{
- const RegisterUser = new User({username, password: hashpassword, role,Authendicate:"False"});
- await RegisterUser.save();
- }
- res.json({"message": "user Set success"});
+    try {
+      console.log(req.body);
+      let { username, password, role } = req.body;
+      console.log(password);
+      const hashpassword = await bcrypt.hash(password, 10);
+      console.log(hashpassword);
+      if (role === "admin") {
+        const RegisterUser = new User({
+          username,
+          password: hashpassword,
+          role,
+        });
+        await RegisterUser.save();
+      } else {
+        const RegisterUser = new User({
+          username,
+          password: hashpassword,
+          role,
+          Authendicate: "False",
+        });
+        await RegisterUser.save();
+      }
+      res.json({ message: "Registration successful" });
+    } catch (error) {
+      console.error("Error during registration:", error);
+      res.status(500).json({ message: "Registration failed" });
+    }
+
 
 
 });

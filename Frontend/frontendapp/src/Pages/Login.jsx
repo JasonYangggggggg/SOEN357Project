@@ -14,11 +14,18 @@ const Login = () => {
     e.preventDefault();
     if (isRegistering) {
       console.log("Registering user:", username, password, role);
-      const response = await axios.post(
-        "http://localhost:3001/register",
-        { username, password, role },
-        { withCredentials: true }
-      );
+      try {
+        const response = await axios.post(
+          "http://localhost:3001/register",
+          { username, password, role },
+          { withCredentials: true }
+        );
+        alert(response.data.message);
+      } catch (error) {
+        console.error("Error during registration:", error);
+        alert("Registration failed"); //handle failed registraion
+      }
+
     } else {
       console.log("Logging in user:", username, password);
       const response = await axios.post(
