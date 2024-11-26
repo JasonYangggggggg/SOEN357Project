@@ -109,7 +109,17 @@ const MainPage = () => {
     console.log("test currentUser name: ", CurrentUserName);
     return (
         <div>
-      <h1>This is the Main Page</h1>
+<h1 style={{
+    fontFamily: "'Arial', sans-serif",
+    fontSize: "2.5em",
+    color: "#007BFF", // Blue color
+    textAlign: "center",
+    marginTop: "20px",
+    marginBottom: "20px",
+    textShadow: "1px 1px 2px rgba(0, 0, 0, 0.1)"
+}}>
+    Safe<span style={{ color: "#0056b3", fontWeight: "bold" }}>Trade</span>
+</h1>
       
       
       {CurrentRole === "admin" ? (
@@ -187,7 +197,7 @@ const MainPage = () => {
                                     />
                                 )}
                                 <h3 style={{ margin: "10px 0" }}>{item.ItemName}</h3>
-                                <p>
+                                <p style={{ margin: "5px 0", }}>
                                     <strong>Seller:</strong> {item.username}
                                     {item.Authendicate === "True" && (
                                         <span style={{
@@ -203,9 +213,9 @@ const MainPage = () => {
                                         </span>
                                     )}
                                 </p>
-                                <p><strong>How New:</strong> {item.HowNew}</p>
-                                <p><strong>Province:</strong> {item.Province}</p>
-                                <p><strong>Area:</strong> {item.Area}</p>
+                                <p style={{fontSize: "14px", margin: "5px 0", }} ><strong>How New:</strong> {item.HowNew}</p>
+                                <p style={{fontSize: "14px", margin: "5px 0", }} ><strong>Province:</strong> {item.Province}</p>
+                                <p style={{fontSize: "14px", margin: "5px 0", }} ><strong>Area:</strong> {item.Area}</p>
                                 <button onClick={BuyorReserve} style={{ marginTop: "10px" }}>Buy/Reserve</button>
                             </div>
                         ))}
