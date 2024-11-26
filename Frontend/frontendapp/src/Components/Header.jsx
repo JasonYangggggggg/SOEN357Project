@@ -42,7 +42,12 @@ const headerStyle = {
   border: "none",
   margin: "0",
   boxSizing: "border-box",
-  height: "150px", // Increase the height of the header
+  height: "60px", // shorten the height of the header
+  position: "fixed",
+  top: "0", // Stick to the top of the viewport
+  left: "0", // spans from the left to the right
+  right: "0",
+  zIndex: "1000",
 };
 
 const titleStyle = {
@@ -94,7 +99,7 @@ const searchStyle = {
   borderRadius: "20px",
   border: "1px solid #ccc",
   fontFamily: "Inter, sans-serif",
-  fontSize: "20px",
+  fontSize: "15px",
   boxSizing: "border-box", // Ensure padding doesn't overflow
 };
 

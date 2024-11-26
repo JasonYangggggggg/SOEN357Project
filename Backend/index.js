@@ -238,40 +238,41 @@ app.post("/CheckAuth", async(req,res)=>{
     res.json({message:userData.Authendicate});
 });
 
-app.post("/ListItems", async(req,res)=> {
-    try {
-        const { formData, username } = req.body;
+app.post("/ListItems", async (req, res) => {
+  // add item
+  try {
+    const { formData, username } = req.body;
 
-        if (!formData || !username) {
-            return res.status(400).json({ message: "Missing form data or username" });
-        }
-
-        const newItem = new ItemList({
-            username: username, 
-            ItemName: formData.name,
-            HowNew: formData.new,
-            Province: formData.province,
-            Area: formData.area,
-        });
-
-        
-        await newItem.save();
-        res.json({ message: "Item successfully added!" });
-    } catch (error) {
-        console.error("Error adding item:", error);
-        res.json({ message: "Server error, could not add item." });
+    if (!formData || !username) {
+      return res.status(400).json({ message: "Missing form data or username" });
     }
+
+    const newItem = new ItemList({
+      username: username,
+      ItemName: formData.name,
+      HowNew: formData.new,
+      Province: formData.province,
+      Area: formData.area,
+    });
+
+    await newItem.save();
+    res.json({ message: "Item successfully added!" });
+  } catch (error) {
+    console.error("Error adding item:", error);
+    res.json({ message: "Server error, could not add item." });
+  }
 });
 
-app.get("/AllListing", async(req,res)=> {
-    try {
-        const listings = await ItemList.find();
-        res.json({ listings });
-    } catch (error) {
-        console.error('Error fetching listings:', error);
-        res.json({ message: "There was an error fetching the listings" });
-    }
-})
+app.get("/AllListing", async (req, res) => {
+  // fetch all item
+  try {
+    const listings = await ItemList.find();
+    res.json({ listings });
+  } catch (error) {
+    console.error("Error fetching listings:", error);
+    res.json({ message: "There was an error fetching the listings" });
+  }
+});
    
 
 app.listen(3001, ()=>{
