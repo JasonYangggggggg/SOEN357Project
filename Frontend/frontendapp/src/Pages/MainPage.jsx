@@ -176,34 +176,40 @@ const MainPage = () => {
                 {listings.length === 0 && !error ? (
                     <p>No listings available.</p>
                 ) : (
-                    <table border="1" style={{ width: "100%", marginTop: "20px" }}>
-                        <thead>
-                            <tr>
-                                <th>Image</th>
-                                <th>Item Name</th>
-                                <th>How New</th>
-                                <th>Province</th>
-                                <th>Area</th>
-                                <th>Seller</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {listings.map((item, index) => (
-                                <tr key={index}>
-                                    <td>{item.image && <img src={`http://localhost:3001/uploads/${item.image}`} alt="Item" style={{ width: '100px' }} />}</td>
-                                    <td>{item.ItemName}</td>
-                                    <td>{item.HowNew}</td>
-                                    <td>{item.Province}</td>
-                                    <td>{item.Area}</td>
-                                    <td>{item.username}</td>
-                                    <td>
-  
-                                <button onClick={BuyorReserve} >Buy/Reserve</button>
-                            </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: "20px", marginTop: "20px" }}>
+                        {listings.map((item, index) => (
+                            <div key={index} style={{ border: "1px solid #ccc", padding: "10px", borderRadius: "5px", textAlign: "center" }}>
+                                {item.image && (
+                                    <img
+                                        src={`http://localhost:3001/uploads/${item.image}`}
+                                        alt="Item"
+                                        style={{ width: "100%", maxHeight: "150px", objectFit: "cover", marginBottom: "10px" }}
+                                    />
+                                )}
+                                <h3 style={{ margin: "10px 0" }}>{item.ItemName}</h3>
+                                <p>
+                                    <strong>Seller:</strong> {item.username}
+                                    {item.Authendicate === "True" && (
+                                        <span style={{
+                                            display: "inline-block",
+                                            marginLeft: "10px",
+                                            padding: "2px 6px",
+                                            backgroundColor: "lightgreen",
+                                            color: "black",
+                                            borderRadius: "4px",
+                                            fontSize: "12px",
+                                            }}>
+                                            Verified
+                                        </span>
+                                    )}
+                                </p>
+                                <p><strong>How New:</strong> {item.HowNew}</p>
+                                <p><strong>Province:</strong> {item.Province}</p>
+                                <p><strong>Area:</strong> {item.Area}</p>
+                                <button onClick={BuyorReserve} style={{ marginTop: "10px" }}>Buy/Reserve</button>
+                            </div>
+                        ))}
+                    </div>
                 )}
             </div>
         </div>
