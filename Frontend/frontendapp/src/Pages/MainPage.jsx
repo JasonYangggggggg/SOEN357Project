@@ -168,7 +168,7 @@ const MainPage = () => {
             <h2>Welcome, {CurrentUserName}</h2>
             <button onClick={LogoutButton}>Logout</button>
             <button style={{ marginLeft: "20px" }} onClick={navigateToVerifyFormPage}>Go to Verify</button>
-            <button style={{ marginLeft: "30px" }} onClick={ListOrAwaitToApprove}>List Item</button>
+            <button style={{ marginLeft: "30px" }} onClick={ListOrAwaitToApprove}>Add Item for Sale</button>
 
             <div>
              {error && <p style={{ color: 'red' }}>{error}</p>}
@@ -179,6 +179,7 @@ const MainPage = () => {
                     <table border="1" style={{ width: "100%", marginTop: "20px" }}>
                         <thead>
                             <tr>
+                                <th>Image</th>
                                 <th>Item Name</th>
                                 <th>How New</th>
                                 <th>Province</th>
@@ -189,6 +190,7 @@ const MainPage = () => {
                         <tbody>
                             {listings.map((item, index) => (
                                 <tr key={index}>
+                                    <td>{item.image && <img src={`http://localhost:3001/uploads/${item.image}`} alt="Item" style={{ width: '100px' }} />}</td>
                                     <td>{item.ItemName}</td>
                                     <td>{item.HowNew}</td>
                                     <td>{item.Province}</td>

@@ -4,6 +4,22 @@ const cors = require("cors");
 const session = require("express-session");
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
+const multer = require('multer'); // multer for file handling
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, './uploads'); // Store images in the 'uploads' directory
+    },
+    filename: (req, file, cb) => {
+      cb(null, Date.now() + '-' + file.originalname);
+    },
+});
+  
+const upload = multer({ storage });
+  
+app.use('/uploads', express.static('uploads')); // Serve images statically
+
+
 app.use(cors({
     origin: 'http://localhost:3000', 
     methods: ['GET', 'POST', 'PUT', 'DELETE'], 
@@ -45,7 +61,8 @@ const ItemList = mongoose.model('ItemList', new mongoose.Schema({
     ItemName:String,
     HowNew: String,
     Province: String,
-    Area:String
+    Area:String,
+    image: String,
 }));
 
 
@@ -224,7 +241,7 @@ app.post("/CheckAuth", async(req,res)=>{
     res.json({message:userData.Authendicate});
 });
 
-app.post("/ListItems", async(req,res)=> {
+app.post("/ListItems", upload.single('image'), async(req,res)=> {
     try {
         const { formData, username } = req.body;
 
@@ -232,12 +249,14 @@ app.post("/ListItems", async(req,res)=> {
             return res.status(400).json({ message: "Missing form data or username" });
         }
 
+        const parsedFormData = JSON.parse(formData); //Parse the formData string to JSON
         const newItem = new ItemList({
             username: username, 
-            ItemName: formData.name,
-            HowNew: formData.new,
-            Province: formData.province,
-            Area: formData.area,
+            ItemName: parsedFormData.name,
+            HowNew: parsedFormData.new,
+            Province: parsedFormData.province,
+            Area: parsedFormData.area,
+            image: req.file.filename,
         });
 
         
