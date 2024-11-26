@@ -271,7 +271,17 @@ app.post("/ListItems", upload.single('image'), async(req,res)=> {
 app.get("/AllListing", async(req,res)=> {
     try {
         const listings = await ItemList.find();
-        res.json({ listings });
+        // add Authendicate field from User 
+        const enrichedListings = await Promise.all(
+            listings.map(async (listing) => {
+                const user = await User.findOne({ username: listing.username });
+                return {
+                    ...listing._doc, // Spread the original listing fields
+                    Authendicate: user?.Authendicate || "False", // Add Authendicate field
+                };
+            })
+        );
+        res.json({ listings: enrichedListings });
     } catch (error) {
         console.error('Error fetching listings:', error);
         res.json({ message: "There was an error fetching the listings" });
