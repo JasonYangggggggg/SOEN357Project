@@ -52,7 +52,7 @@ const Login = () => {
               id="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              style={{ padding: "10px", border: "1px solid #ccc", borderRadius: "4px", fontSize: "14px", width: "100%" }}
+              style={{ padding: "10px", border: "1px solid #ccc", borderRadius: "4px", fontSize: "14px", width: "100%", boxSizing: "border-box" }}
               required
             />
           </div>
@@ -63,7 +63,7 @@ const Login = () => {
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              style={{ padding: "10px", border: "1px solid #ccc", borderRadius: "4px", fontSize: "14px", width: "100%" }}
+              style={{ padding: "10px", border: "1px solid #ccc", borderRadius: "4px", fontSize: "14px", width: "100%", boxSizing: "border-box" }}
               required
             />
           </div>
