@@ -18,6 +18,8 @@ const ListItem = () => {
   
   const [statusMessage, setStatusMessage] = useState('');
 
+  const [image, setImage] = useState(null); // Added state for image
+
   
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -27,17 +29,33 @@ const ListItem = () => {
     });
   };
 
+  // Added handler for image input
+  const handleFileChange = (e) => {
+    setImage(e.target.files[0]);
+  };
   
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("form data item", formData);
     const username = CurrentUserName;
-    const response = await axios.post(
-        "http://localhost:3001/ListItems", 
-        { formData, username},
-        { withCredentials: true }
+
+    //FormData object for file upload
+    const formDataObj = new FormData();
+    formDataObj.append('formData', JSON.stringify(formData));
+    formDataObj.append('username', username);
+    formDataObj.append('image', image);
+    
+    try{
+      const response = await axios.post(
+        "http://localhost:3001/ListItems",
+        formDataObj,
+        { withCredentials: true, headers: { 'Content-Type': 'multipart/form-data' } }
       );
-    console.log(response.data);
+      console.log(response.data);
+      setStatusMessage(response.data.message);
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
    
   };
 
@@ -112,6 +130,18 @@ useEffect(()=> {
             name="area"
             value={formData.area}
             onChange={handleChange}
+            required
+          />
+        </div>
+
+        <div>
+          <label htmlFor="image">Upload Image:</label>
+          <input
+            type="file"
+            id="image"
+            name="image"
+            accept="image/*"
+            onChange={handleFileChange}
             required
           />
         </div>
