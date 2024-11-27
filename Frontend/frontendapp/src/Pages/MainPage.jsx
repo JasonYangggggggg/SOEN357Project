@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Slider from "react-slick";
 import Header from '../Components/Header';
+import QuickView from '../Components/Quickview';
 import { products, electronics } from '../Data/products'; // Adjust the import path as needed
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -16,7 +17,7 @@ const MainPage = () => {
   const [listings, setListings] = useState([]);
   const [error, setError] = useState(null);
   const [activeView, setActiveView] = useState("browseAll");
-
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const fetchData = async () => {
     try {
       const response = await axios.get("http://localhost:3001/check-session", {
@@ -85,6 +86,15 @@ const MainPage = () => {
       },
     ],
   };
+
+  const handleProductClick = (product) => {
+    setSelectedProduct(product);
+  };
+
+  const handleCloseQuickView = () => {
+    setSelectedProduct(null);
+  };
+
 
   const renderContent = () => {
     switch (activeView) {
@@ -155,21 +165,30 @@ const MainPage = () => {
               <p>No listings available</p>
             ) : (
               <Slider {...settings}>
-                {products.map((product) => (
-                  <div key={product.id} style={productLinkStyle}>
-                    <a href={product.href} style={productContentStyle}>
-                      <img
-                        alt={product.imageAlt}
-                        src={product.imageSrc}
-                        style={productImageStyle}
-                      />
-                      <p style={productPriceStyle}>{product.price}</p>
-                      <h3 style={productNameStyle}>{product.name}</h3>
-                    </a>
-                  </div>
-                ))}
-              </Slider>
-            )}
+              {products.map((product) => (
+                <div key={product.id} style={productLinkStyle}>
+                  <button
+                    onClick={() => handleProductClick(product)}
+                    style={{
+                      ...productContentStyle,
+                      background: "none",
+                      border: "none",
+                      padding: 0,
+                      cursor: "pointer",
+                    }}
+                  >
+                    <img
+                      alt={product.imageAlt}
+                      src={product.imageSrc}
+                      style={productImageStyle}
+                    />
+                    <p style={productPriceStyle}>{product.price}</p>
+                    <h3 style={productNameStyle}>{product.name}</h3>
+                  </button>
+                </div>
+              ))}
+            </Slider>
+          )}
             <h2 style={{ ...categoryTitleStyle, marginTop: "40px" }}>
               Electronics
             </h2>{" "}
@@ -178,20 +197,29 @@ const MainPage = () => {
               <p>No electronics available</p>
             ) : (
               <Slider {...settings}>
-                {electronics.map((product) => (
-                  <div key={product.id} style={productLinkStyle}>
-                    <a href={product.href} style={productContentStyle}>
-                      <img
-                        alt={product.imageAlt}
-                        src={product.imageSrc}
-                        style={productImageStyle}
-                      />
-                      <p style={productPriceStyle}>{product.price}</p>
-                      <h3 style={productNameStyle}>{product.name}</h3>
-                    </a>
-                  </div>
-                ))}
-              </Slider>
+              {electronics.map((product) => (
+                <div key={product.id} style={productLinkStyle}>
+                  <button
+                    onClick={() => handleProductClick(product)}
+                    style={{
+                      ...productContentStyle,
+                      background: "none",
+                      border: "none",
+                      padding: 0,
+                      cursor: "pointer",
+                    }}
+                  >
+                    <img
+                      alt={product.imageAlt}
+                      src={product.imageSrc}
+                      style={productImageStyle}
+                    />
+                    <p style={productPriceStyle}>{product.price}</p>
+                    <h3 style={productNameStyle}>{product.name}</h3>
+                  </button>
+                </div>
+              ))}
+            </Slider>
             )}
             {error && <p style={errorStyle}>{error}</p>}
           </>
@@ -242,6 +270,7 @@ const MainPage = () => {
           </button>
         </div>
       </div>
+      {selectedProduct && (<QuickView product={selectedProduct} onClose={handleCloseQuickView} />)}
     </div>
   );
 };
