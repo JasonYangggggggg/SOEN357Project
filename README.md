@@ -2,6 +2,15 @@ Safe Trade application
 
 Reminder, in order to see the website, you need to clone the current repository, cd into backend folder, then "npm install". cd into Frontend/frontendapp then "npm install" command. Make sure you have mongodb compass
 
+Once you done the step, open two terminals. First one you can cd into the Backend Folder. Then run "npm run dev". The server will then start.
+
+Then the second terminal, you cd into the Frontend/frontendapp. Then you run "npm start". The app will start without an issue.
+
+If you have any problems running the app, the issue should be resolved by running "npm install" (if you haven't run it) for both folder (Frontend/frontendapp & Backend). 
+
+To install Mongodb Compass, go to the following link: https://www.mongodb.com/docs/compass/current/install/
+
+
 
 Complete App demonstration below:
 
