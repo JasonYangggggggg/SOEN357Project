@@ -53,6 +53,10 @@ You can also reserve time with the seller for the item:
 Once you reserved a time, you can also check the reservation detail in the detail page:
 ![Reservation Detail Page](https://github.com/user-attachments/assets/df349f8b-54f3-496e-84ed-33b4bebbf754)
 
+Instructional tooltip for required field validation
+
+<img width="345" alt="instruction tooltips" src="https://github.com/user-attachments/assets/81db3bf0-17cb-4541-8f99-5a0e0986546e">
+
 
 Feel free to play around the software by clone the current branch. Again please make sure you have Mongodb Compass installed. Otherwise, It won't work.
 
